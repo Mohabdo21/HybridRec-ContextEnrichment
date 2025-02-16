@@ -40,6 +40,60 @@ Advanced hybrid recommendation system combining collaborative filtering and cont
 \text{Score} = \alpha·\text{CF} + (1-\alpha)(0.7·\text{CB} + 0.3·\text{FavSim})
 ```
 
+
+```mermaid
+graph TD
+    subgraph DataLayer[Data Preparation]
+        A[User-Artist Interactions] --> B[BM25 Weighting]
+        C[Artist Tags] --> D[Temporal Weighting]
+        E[Timestamps] --> D
+    end
+
+    subgraph CF[Collaborative Filtering]
+        B --> F[ALS Optimization]
+        F --> G[Factor Matrices]
+        G --> H[CF Score]
+    end
+
+    subgraph CB[Content-Based Filtering]
+        D --> I[Stemmed N-grams]
+        I --> J[TF-IDF Vectors]
+        J --> K[Cosine Similarity]
+        K --> L[CB Score]
+    end
+
+    subgraph Hybrid[Hybrid Engine]
+        H --> M{Dynamic Blending}
+        L --> M
+        D --> N[α Calculation]
+        N --> M
+        M --> O[Final Score]
+    end
+
+    subgraph Runtime[Online Adaptation]
+        O --> P[Recommendations]
+        P --> Q[Partial Updates]
+        Q --> F
+        Q --> J
+    end
+
+    subgraph Optim[Optimizations]
+        R[Sparse Matrices] --> F & J
+        S[Cached Indices] --> K & M
+        T[Memory Management] --> Q
+    end
+
+    style DataLayer fill:#444,stroke:#888
+    style CF fill:#333,stroke:#777
+    style CB fill:#333,stroke:#777
+    style Hybrid fill:#222,stroke:#666
+    style Runtime fill:#333,stroke:#777
+    style Optim fill:#444,stroke:#888
+    style M fill:#000,stroke:#fff
+    style O fill:#fff,stroke:#000,color:#000
+
+```
+
 ## Installation
 
 ```bash
