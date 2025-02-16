@@ -41,58 +41,53 @@ Advanced hybrid recommendation system combining collaborative filtering and cont
 ```
 
 
+## Collaborative + Content-Based Filtering with Real-Time Adaptation
 ```mermaid
-graph TD
-    subgraph DataLayer[Data Preparation]
-        A[User-Artist Interactions] --> B[BM25 Weighting]
-        C[Artist Tags] --> D[Temporal Weighting]
-        E[Timestamps] --> D
+graph TB
+    subgraph "Data Sources"
+        A[User-Artist<br>Interactions] --> B[CSR Matrix]
+        C[User-Tag<br>Timestamps] --> D[Temporal Decay<br>Calculation]
+        E[Artist Metadata] --> F[TF-IDF Corpus]
     end
 
-    subgraph CF[Collaborative Filtering]
-        B --> F[ALS Optimization]
-        F --> G[Factor Matrices]
-        G --> H[CF Score]
+    subgraph "Collaborative Filtering"
+        B --> G[BM25 Weighting]
+        G --> H[ALS Model]
+        H --> I((128 Latent<br>Factors))
     end
 
-    subgraph CB[Content-Based Filtering]
-        D --> I[Stemmed N-grams]
-        I --> J[TF-IDF Vectors]
-        J --> K[Cosine Similarity]
-        K --> L[CB Score]
+    subgraph "Content-Based Filtering"
+        D --> J[Weighted Tags]
+        F --> K[Stemmed TF-IDF]
+        J --> K
+        K --> L[Artist Similarity<br>Matrix]
     end
 
-    subgraph Hybrid[Hybrid Engine]
-        H --> M{Dynamic Blending}
-        L --> M
-        D --> N[α Calculation]
-        N --> M
-        M --> O[Final Score]
+    subgraph "Hybrid Blending"
+        M[User Context] --> N{Dynamic Alpha<br>Calculation}
+        H --> O[CF Scores]
+        L --> P[CB Scores]
+        O --> Q[Score Blending]
+        P --> Q
+        N --> Q
+        Q --> R[Top-N Recommendations]
     end
 
-    subgraph Runtime[Online Adaptation]
-        O --> P[Recommendations]
-        P --> Q[Partial Updates]
-        Q --> F
-        Q --> J
+    subgraph "Online Learning"
+        S[New Interactions] --> T[CSR Matrix Update]
+        T --> U[Partial ALS Retrain]
+        U --> H
     end
 
-    subgraph Optim[Optimizations]
-        R[Sparse Matrices] --> F & J
-        S[Cached Indices] --> K & M
-        T[Memory Management] --> Q
-    end
-
-    style DataLayer fill:#444,stroke:#888
-    style CF fill:#333,stroke:#777
-    style CB fill:#333,stroke:#777
-    style Hybrid fill:#222,stroke:#666
-    style Runtime fill:#333,stroke:#777
-    style Optim fill:#444,stroke:#888
-    style M fill:#000,stroke:#fff
-    style O fill:#fff,stroke:#000,color:#000
-
+    style A stroke-width:2px
+    style C stroke-width:2px
+    style E stroke-width:2px
+    style H stroke-width:2px
+    style K stroke-width:2px
+    style Q stroke-width:2px
+    style T stroke-width:2px
 ```
+
 
 ## Installation
 
